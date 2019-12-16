@@ -53,6 +53,27 @@ public class TestHangman {
 
         }
 
+    }
 
+    @Test
+    void test_fetchClueBeforeAnyGuess() {
+        String clue = hangman.fetchClue("pizza");
+        assertEquals("-----", clue);
+    }
+
+    @Test
+    void test_fetchClueAfterCorrectGuess() {
+        String clue = hangman.fetchClue("pizza");
+        String newClue = hangman.fetchClue("pizza", clue, 'p');
+        String clue1 = hangman.fetchClue("pizza", newClue, 'a');
+        String clue2 = hangman.fetchClue("pizza", clue1, 'z');
+        assertEquals("p-zza", clue2);
+    }
+
+    @Test
+    void test_fetchClueAfterIncorrectGuess() {
+        String clue = hangman.fetchClue("pizza");
+        String newClue = hangman.fetchClue("pizza", clue, 'y');
+        assertEquals("-----", clue);
     }
 }
