@@ -8,6 +8,9 @@ import java.util.Set;
 
 public class Hangman {
 
+    public static final int MAX_TRAILS = 10;
+    public int remainingTrails;
+    public int score;
     Set<String> usedWordsSet = new HashSet<>();
     List<String> wordsList = new ArrayList<>();
 
@@ -21,9 +24,10 @@ public class Hangman {
     }
 
     public String fetchWord(int requestedLength) {
-        for (String result : wordsList) {
-            if (result.length() != requestedLength) continue;
-            else if (usedWordsSet.add(result)) return result;
+        remainingTrails = MAX_TRAILS;
+        for (String word : wordsList) {
+            if (word.length() != requestedLength) continue;
+            else if (usedWordsSet.add(word)) return word;
         }
         return null;
 
@@ -47,21 +51,26 @@ public class Hangman {
         for (int i = 0; i < word.length(); i++) {
             clue.append("-");
         }
+
         return clue.toString();
     }
 
     public String fetchClue(String word, String clue, char guess) {
+        StringBuilder newClue = new StringBuilder();
+
         if (guess >= 'A' && guess <= 'Z') guess += 32;
         if (guess < 'a' || guess > 'z')
             throw new IllegalArgumentException("Illegal Argument for Invalid guess");
-        StringBuilder newClue = new StringBuilder();
+
         for (int i = 0; i < word.length(); i++) {
             if (guess == word.charAt(i) && guess != clue.charAt(i)) {
                 newClue.append(guess);
+                score += (double) MAX_TRAILS / word.length();
             } else {
                 newClue.append(clue.charAt(i));
             }
         }
+        remainingTrails--;
         return newClue.toString();
     }
 }

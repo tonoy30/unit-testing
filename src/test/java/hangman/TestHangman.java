@@ -26,6 +26,7 @@ public class TestHangman {
     @BeforeEach
     public void setupHangman() {
         requestedLength = random.nextInt(6) + 5;
+        hangman.score = 0;
     }
 
     @Test
@@ -88,6 +89,45 @@ public class TestHangman {
         Exception e = assertThrows(IllegalArgumentException.class,
                 () -> hangman.fetchClue("pizza", "-----", '1'));
         assertEquals("Illegal Argument for Invalid guess", e.getMessage());
+    }
+
+    @Test
+    void test_remainingTrailBeforeAnyGuesses() {
+        hangman.fetchWord(requestedLength);
+        assertEquals(Hangman.MAX_TRAILS, hangman.remainingTrails);
+    }
+
+    @Test
+    void test_remainingTrailAfterOneGuess() {
+        hangman.fetchWord(requestedLength);
+        hangman.fetchClue("pizza", "-----", 'p');
+        assertEquals(Hangman.MAX_TRAILS - 1, hangman.remainingTrails);
+    }
+
+    @Test
+    void test_scoreBeforeAnyGuess() {
+        hangman.fetchWord(requestedLength);
+        assertEquals(0, hangman.score);
+    }
+
+    @Test
+    void test_scoreAfterCorrectGuess() {
+        String word = "pizza";
+        String clue = "-----";
+        char guess = 'a';
+
+        hangman.fetchClue(word, clue, guess);
+        assertEquals((double) Hangman.MAX_TRAILS / word.length(), hangman.score);
+    }
+
+    @Test
+    void test_scoreAfterIncorrectGuess() {
+        String word = "pizza";
+        String clue = "-----";
+        char guess = 'x';
+
+        hangman.fetchClue(word, clue, guess);
+        assertEquals(0, hangman.score);
     }
 
 }
