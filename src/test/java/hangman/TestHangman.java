@@ -1,5 +1,7 @@
 package hangman;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -7,17 +9,23 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestHangman {
     private static Hangman hangman;
     private static Random random;
+    private static int requestedLength;
+
+    @BeforeAll
+    public static void setupClass() {
+        hangman = new Hangman();
+        random = new Random();
+        hangman.loadsWord();
+    }
 
     @BeforeEach
     public void setupHangman() {
-        hangman = new Hangman();
-        random = new Random();
+        requestedLength = random.nextInt(6) + 5;
     }
 
     @Test
@@ -30,27 +38,19 @@ public class TestHangman {
 
     @Test
     void test_lengthOfFetchedWordRandom() {
-        int requestedLength = random.nextInt(6) + 5;
-        hangman.loadsWord();
         String word = hangman.fetchWord(requestedLength);
         assertTrue(word.length() == requestedLength);
     }
 
     @Test
     void test_uniquenessOffFetchedWord() {
-        int requestedLength = 0;
         int round = 0;
         String word = null;
-        hangman.loadsWord();
         Set<String> usedWordsSet = new HashSet<>();
-
-
         while (round < 100) {
-            requestedLength = random.nextInt(6) + 5;
             word = hangman.fetchWord(requestedLength);
             round++;
             assertTrue(usedWordsSet.add(word));
-
         }
 
     }
@@ -76,4 +76,18 @@ public class TestHangman {
         String newClue = hangman.fetchClue("pizza", clue, 'y');
         assertEquals("-----", clue);
     }
+
+    @Test
+    void test_fetchClueAfterIllegalArgumentException() {
+        assertThrows(IllegalArgumentException.class,
+                () -> hangman.fetchClue("pizza", "-----", '1'));
+    }
+
+    @Test
+    void test_fetchClueAfterIllegalArgumentExceptionWithMessage() {
+        Exception e = assertThrows(IllegalArgumentException.class,
+                () -> hangman.fetchClue("pizza", "-----", '1'));
+        assertEquals("Illegal Argument for Invalid guess", e.getMessage());
+    }
+
 }

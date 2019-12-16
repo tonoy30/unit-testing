@@ -51,6 +51,9 @@ public class Hangman {
     }
 
     public String fetchClue(String word, String clue, char guess) {
+        if (guess >= 'A' && guess <= 'Z') guess += 32;
+        if (guess < 'a' || guess > 'z')
+            throw new IllegalArgumentException("Illegal Argument for Invalid guess");
         StringBuilder newClue = new StringBuilder();
         for (int i = 0; i < word.length(); i++) {
             if (guess == word.charAt(i) && guess != clue.charAt(i)) {
