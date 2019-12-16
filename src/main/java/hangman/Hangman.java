@@ -8,11 +8,21 @@ import java.util.Set;
 
 public class Hangman {
 
+
     public static final int MAX_TRAILS = 10;
     public int remainingTrails;
     public int score;
+    MockScoreDB mockScoreDB;
     Set<String> usedWordsSet = new HashSet<>();
     List<String> wordsList = new ArrayList<>();
+
+    public Hangman() {
+    }
+
+    public Hangman(MockScoreDB mockScoreDB) {
+        this.mockScoreDB = mockScoreDB;
+    }
+
 
     public int countAlphabet(String word, char alphabet) {
         int result = 0;
@@ -72,5 +82,9 @@ public class Hangman {
         }
         remainingTrails--;
         return newClue.toString();
+    }
+
+    public boolean saveWordScoreToDB(String word, int score) {
+        return mockScoreDB.writeScoreToDB(word, score);
     }
 }

@@ -1,6 +1,6 @@
 package hangman;
 
-import org.junit.jupiter.api.AfterEach;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,6 +10,8 @@ import java.util.Random;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class TestHangman {
     private static Hangman hangman;
@@ -130,4 +132,11 @@ public class TestHangman {
         assertEquals(0, hangman.score);
     }
 
+    @Test
+    void test_scoreWriteToMockDB() {
+        MockScoreDB mockScoreDB = mock(MockScoreDB.class);
+        Hangman hangman = new Hangman(mockScoreDB);
+        when(mockScoreDB.writeScoreToDB("apple", 10)).thenReturn(true);
+        assertTrue(hangman.saveWordScoreToDB("apple", 10));
+    }
 }
